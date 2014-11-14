@@ -48,9 +48,6 @@ ENDPRINT
 sub auxforms{
 	print<<ENDPRINT;
 	<div id="auxforms">
-		<a href="index.pl">
-			<img src = "images/logo.png" />
-		</a>
 		<input type=text name="username" placeholder="Your name"/>
 		<form method=post action="index.pl">
 			<fieldset id="inputchangers">
