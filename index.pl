@@ -18,7 +18,7 @@ sub default{
 $quizinputs = default($quizinputs,5);
 $testinputs = default($testinputs,5);
 
-#Subroutine to start the file, with everything else contained in a div named "content".
+##Subroutine to start the file, with everything else contained in a div named "content".
 sub startfile{
 print<<ENDPRINT; 
 Content-type: text/html
@@ -34,7 +34,7 @@ Content-type: text/html
 ENDPRINT
 }
 
-#Subroutine to end the content div and printed HTML file.
+##Subroutine to end the content div and printed HTML file.
 sub endfile{
 print<<ENDPRINT;
 	</div>
@@ -65,17 +65,17 @@ ENDPRINT
 # Between the print statements, other routines are called to create the Quiz and Test formspans seperately
 sub mainforms{
 	print<<ENDPRINT;
-<form method=post action="index.pl">
-
-<div class="container">
+	<form method=post action="index.pl">
+		<div class="mainforms">
 ENDPRINT
 
 	makequizform(@_[0]);
 	maketestform(@_[1]);
 
 	print<<ENDPRINT;
-<input type=submit value="Submit">
-</form>
+			<input type=submit value="Submit">
+		</div>
+	</form>
 ENDPRINT
 }
 
