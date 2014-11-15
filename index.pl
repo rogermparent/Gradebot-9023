@@ -18,7 +18,7 @@ sub default{
 $quizinputs = default($quizinputs,5);
 $testinputs = default($testinputs,5);
 
-##Subroutine to start the file, with everything else contained in a div named "content".
+##Subroutine to start the file, with everything else contained in a div named "mainforms".
 sub startfile{
 print<<ENDPRINT; 
 Content-type: text/html
@@ -30,7 +30,7 @@ Content-type: text/html
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div id="content">
+	<div id="mainforms">
 ENDPRINT
 }
 
@@ -51,15 +51,17 @@ sub auxforms{
 		<a href="index.pl">
 			<img src = "images/logo.png" />
 		</a>
-		<input type=text name="username" placeholder="Your name"/>
-		<form method=post action="index.pl">
-			<fieldset id="inputchangers">
-				<legend>Change the amount of grades</legend>
-				<input type=number name="quizinputs" value="$quizinputs"/>
-				<input type=number name="testinputs" value="$testinputs"/>
-				<input type=submit value="Change" />
-			</fieldset>
-		</form>
+		<div class="centered">
+			<input type=text name="username" placeholder="Your name"/>
+			<form method=post action="index.pl">
+				<fieldset id="inputchangers">
+					<legend>Change the amount of grades</legend>
+					<input type=number name="quizinputs" value="$quizinputs"/>
+					<input type=number name="testinputs" value="$testinputs"/>
+					<input type=submit value="Change" />
+				</fieldset>
+			</form>
+		</div>
 	</div>
 ENDPRINT
 }

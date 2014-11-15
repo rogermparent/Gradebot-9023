@@ -1,19 +1,31 @@
-#content{
+/* Generic styles for the whole page */
+.centered{
 	text-align:center;
-	position:absolute;
-	top:20px;
-	left:55%;
-	width:40%;
+	display:inline-block;
 }
-#auxforms{
-	text-align:center;
-	position:absolute;
-	top:20px;
-	left:5%;
-	width:40%;
-}
+
 fieldset{
 	vertical-align:top;
 	display:inline-block;
-	width:40%;
+}
+
+/* Styles for the mainforms div */
+#mainforms fieldset{
+	width:45%;
+}
+#mainforms{
+	text-align:left;
+	position:absolute;
+	top:20px;
+	left:400px;
+	width:50%;
+}
+
+/* Styles for the auxforms div */
+#auxforms{
+	text-align:right;
+	position:absolute;
+	top:0;
+	left:0;
+	width:400px;
 }

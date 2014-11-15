@@ -48,15 +48,20 @@ ENDPRINT
 sub auxforms{
 	print<<ENDPRINT;
 	<div id="auxforms">
-		<input type=text name="username" placeholder="Your name"/>
-		<form method=post action="index.pl">
-			<fieldset id="inputchangers">
-				<legend>Change the amount of grades</legend>
-				<input type=number name="quizinputs" value="$quizinputs"/>
-				<input type=number name="testinputs" value="$testinputs"/>
-				<input type=submit value="Change" />
-			</fieldset>
-		</form>
+		<a href="index.pl">
+			<img src = "images/logo.png" />
+		</a>
+		<div class="centered">
+			<input type=text name="username" placeholder="Your name"/>
+			<form method=post action="index.pl">
+				<fieldset id="inputchangers">
+					<legend>Change the amount of grades</legend>
+					<input type=number name="quizinputs" value="$quizinputs"/>
+					<input type=number name="testinputs" value="$testinputs"/>
+					<input type=submit value="Change" />
+				</fieldset>
+			</form>
+		</div>
 	</div>
 ENDPRINT
 }
