@@ -18,7 +18,7 @@ sub default{
 $quizinputs = default($quizinputs,5);
 $testinputs = default($testinputs,5);
 
-##Subroutine to start the file, with everything else contained in a div named "mainforms".
+##Subroutine to start the file, with everything else contained in a generic div.
 sub startfile{
 print<<ENDPRINT; 
 Content-type: text/html
@@ -30,7 +30,7 @@ Content-type: text/html
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div id="mainforms">
+	<div class="wrapper">
 ENDPRINT
 }
 
@@ -52,7 +52,6 @@ sub auxforms{
 			<img src = "images/logo.png" />
 		</a>
 		<div class="centered">
-			<input type=text name="username" placeholder="Your name"/>
 			<form method=post action="index.pl">
 				<fieldset id="inputchangers">
 					<legend>Change the amount of grades</legend>
@@ -72,12 +71,17 @@ sub mainforms{
 	print<<ENDPRINT;
 	<form method=post action="index.pl">
 		<div class="mainforms">
+			<div class="container centered">
+				<label for="username">Username: </label><input type=text name="username" id="username"/>
+			</div>
+			<div class="container centered" id="quizzesandtests">
 ENDPRINT
 
 	makequizform(@_[0]);
 	maketestform(@_[1]);
 
 	print<<ENDPRINT;
+			</div>
 			<input type=submit value="Submit">
 		</div>
 	</form>
