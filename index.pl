@@ -1,7 +1,9 @@
-#!"C:\xampp\perl\bin\perl.exe"
+#!/usr/bin/perl
 
 use CGI qw(:cgi-lib :standard);
-use warnings; use strict;
+use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
+use warnings;
+use strict;
 
 #### PAGE CONSTRUCTION
 ##
@@ -17,9 +19,6 @@ Content-type: text/html
 	<title>Graderbot 9023</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-ENDPRINT
-printScript();
-print<<ENDPRINT;
 <body>
 ENDPRINT
 }
@@ -38,10 +37,12 @@ sub makeSidebar{ print<<ENDPRINT;
 			<img src = "images/logo.png" />
 		</a>
 		<div class="centered">
-			<form method=post action="index.pl">
-				<fieldset id="inputchangers">
-
-				</fieldset>
+			<form method=get action="index.pl">
+				<div id="manipulators">
+ENDPRINT
+	printAllManipulators();
+	print<<ENDPRINT;
+				</div>
 			</form>
 		</div>
 	</div>
@@ -64,18 +65,6 @@ ENDPRINT
 ENDPRINT
 }
 
-## Print Script: Prints the javascript for changing the form amounts.
-#
-sub printScript{print<<ENDPRINT;
-<script>
-	function addInput(){
-		var form = parent.children[1].cloneNode(true);
-		prompt(form);
-	}
-</script>
-ENDPRINT
-}
-
 #### DYNAMIC FORMS
 ##
 
@@ -87,6 +76,13 @@ my @catLengths;
 my @catWeights;
 my @catData;
 my $catCount = 0;
+
+## Variables to change the form definitions if needed.
+#  
+my @newCatNames = param("inputName");
+my @newCatLengths = param("inputAmount");
+my @newCatWeights = param("inputWeight");
+
 
 ## New Category: Appends a new form definition to the form quartet, the appends the count.
 #  This should always be used as opposed to directly modifying the arrays.
@@ -116,8 +112,6 @@ ENDPRINT
 	}
 
 print<<ENDPRINT;
-		<button type="button" class="addButtons" onClick="addInput()">+</button>
-		<button type="button" class="delButtons">-</button>
 	</fieldset>
 ENDPRINT
 }
@@ -131,6 +125,37 @@ sub printAllSets{
 	}
 }
 
+## Print Manipulator
+#  Prints a single manipulator, given parameters (name,amount,weight)
+sub printManipulator{
+	print<<ENDPRINT;
+	<fieldset class="manipulator">
+		<legend>
+		<input type=text name="inputName" value="$_[0]" />
+		</legend>
+		<div><label>Inputs:</label><input type=number name="inputAmount" value="$_[1]"/></div>
+		<div><label>Weight:</label><input type=number name="inputWeight" value="$_[2]"/></div>
+	</fieldset>
+ENDPRINT
+}
+
+##Print All Manipulators
+# Calls Print Manipulator for every definition
+sub printAllManipulators{
+	for(my $i = 0; $i<$catCount; $i++){
+		printManipulator($catNames[$i], $catLengths[$i], $catWeights[$i]);
+	}
+	if(param('newManipulator') eq 'on'){
+		printManipulator();
+	}
+	print<<ENDPRINT;
+	<div>
+		<label for="newcatbox">New category?:</label>
+		<input type=checkbox name="newManipulator" id="newcatbox"/><input type=submit value="Update" />
+	</div>
+ENDPRINT
+}
+
 #### OUTPUT RESULTS
 ##
 
@@ -139,9 +164,15 @@ sub printAllSets{
 #### PREPARATION
 ##
 
-if($catCount==0){
+if(@newCatNames==0){
 	newCat("Projects",5,60);
 	newCat("Quizzes",5,40);
+}else{
+	for(my $i = 0; $i<@newCatNames; $i++){
+		if($newCatNames[$i] ne undef){
+			newCat($newCatNames[$i],$newCatLengths[$i],$newCatWeights[$i]);
+		}
+	}
 }
 
 #### MAIN PROGRAM
