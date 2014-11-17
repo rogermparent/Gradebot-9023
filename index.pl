@@ -1,52 +1,38 @@
-#!/usr/bin/perl
+#!"C:\xampp\perl\bin\perl.exe"
 
 use CGI qw(:cgi-lib :standard);
+use warnings; use strict;
 
-#Declare variables and set them to form inputs if available
-$quizinputs = param("quizinputs");
-$testinputs = param("testinputs");
-@quizgrades = param("quizgrades");
-@testgrades = param("testgrades");
+#### PAGE CONSTRUCTION
+##
 
-##Create a small default-setting subroutine, takes (input variable, default settings)
-# It returns the value if input isn't undef, and the default if it is.
-##Then use it to give variables their default settings
-sub default{
-	if(@_[0]==undef){return @_[1];}
-	else{return @_[0];}
-}
-$quizinputs = default($quizinputs,5);
-$testinputs = default($testinputs,5);
-
-##Subroutine to start the file, with everything else contained in a generic div.
-sub startfile{
-print<<ENDPRINT; 
+##Start File and End File
+# Used first and last to form the boilerplate of the HTML page.
+sub startFile{ print<<ENDPRINT; 
 Content-type: text/html
 
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Perl Template</title>
+	<title>Graderbot 9023</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
+ENDPRINT
+printScript();
+print<<ENDPRINT;
 <body>
-	<div class="wrapper">
 ENDPRINT
 }
 
-##Subroutine to end the content div and printed HTML file.
-sub endfile{
-print<<ENDPRINT;
-	</div>
+sub endFile{ print<<ENDPRINT; 
 </body>
 </html>
 ENDPRINT
 }
 
-##The logo, name form, and input amount changer are in a seperate div
-# This subroutine creates that div
-sub auxforms{
-	print<<ENDPRINT;
+##Make Sidebar and Make Content
+# Create the bulk of the page.
+sub makeSidebar{ print<<ENDPRINT;
 	<div id="auxforms">
 		<a href="index.pl">
 			<img src = "images/logo.png" />
@@ -54,21 +40,14 @@ sub auxforms{
 		<div class="centered">
 			<form method=post action="index.pl">
 				<fieldset id="inputchangers">
-					<legend>Change the amount of grades</legend>
-					<input type=number name="quizinputs" value="$quizinputs"/>
-					<input type=number name="testinputs" value="$testinputs"/>
-					<input type=submit value="Change" />
+
 				</fieldset>
 			</form>
 		</div>
 	</div>
 ENDPRINT
 }
-##This is the subroutine to create the forms
-# Takes amount of inputs for (Quiz form, Test form)
-# Between the print statements, other routines are called to create the Quiz and Test formspans seperately
-sub mainforms{
-	print<<ENDPRINT;
+sub makeContent{ print<<ENDPRINT;
 	<form method=post action="index.pl">
 		<div class="mainforms">
 			<div class="container centered">
@@ -76,10 +55,7 @@ sub mainforms{
 			</div>
 			<div class="container centered" id="quizzesandtests">
 ENDPRINT
-
-	makequizform(@_[0]);
-	maketestform(@_[1]);
-
+	printAllSets();
 	print<<ENDPRINT;
 			</div>
 			<input type=submit value="Submit">
@@ -88,57 +64,89 @@ ENDPRINT
 ENDPRINT
 }
 
-##Make Quiz Form
-# Takes a number and generates a quiz form with that many inputs.
-sub makequizform{
-	print<<ENDPRINT;
-	<fieldset id="quizzes">
-		<legend>Quizzes</legend>
+## Print Script: Prints the javascript for changing the form amounts.
+#
+sub printScript{print<<ENDPRINT;
+<script>
+	function addInput(){
+		var form = parent.children[1].cloneNode(true);
+		prompt(form);
+	}
+</script>
+ENDPRINT
+}
+
+#### DYNAMIC FORMS
+##
+
+## Form definitions: Four arrays of the same length containing the properties of the forms.
+#  Names is strings, Lengths is integers, Weights is floats, and Data is arrays of integers
+#  There's also a variable that is incremented every time the setter is called to keep track of the amount of definitions.
+my @catNames;
+my @catLengths;
+my @catWeights;
+my @catData;
+my $catCount = 0;
+
+## New Category: Appends a new form definition to the form quartet, the appends the count.
+#  This should always be used as opposed to directly modifying the arrays.
+#  Syntax: (name,length,weight)
+sub newCat{
+	push(@catNames,$_[0]);
+	push(@catLengths,$_[1]);
+	push(@catWeights,$_[2]);
+	push(@catData,[]);
+	$catCount++;
+}
+
+## Text Input
+#  Returns the string of a text input tag
+#  Syntax is textInput(name)
+sub textInput{return sprintf("<input type=text name='$_[0]' />\n")}
+
+## Print Set: Print out a fieldset given a name, length, and legend.
+#  Syntax is printSet(name, length, legend)
+sub printSet{ print<<ENDPRINT;
+	<fieldset class="category">
+		<legend>$_[2]</legend>
 ENDPRINT
 
-	#loop to print out x amount of Quiz grade inputs
-	for($i=1;$i<=@_[0];$i++){
-		print("\t\t");#Tabs to make the HTML look nice
-		textinput("quizgrades","Quiz Grade $i");
+	for(my $i = 0; $i < $_[1]; $i++){
+		print("\t\t", textInput($_[0]));
 	}
 
-	print<<ENDPRINT
+print<<ENDPRINT;
+		<button type="button" class="addButtons" onClick="addInput()">+</button>
+		<button type="button" class="delButtons">-</button>
 	</fieldset>
 ENDPRINT
 }
 
-##Make Test Form
-# Identical to Make Quiz Form, but for the Test form
-sub maketestform{
-	print<<ENDPRINT;
-	<fieldset id="tests">
-		<legend>Tests</legend> 
-ENDPRINT
-
-	#ditto for tests
-	for($i=1;$i<=@_[0];$i++){
-		print("\t\t");#Tabs to make the HTML look nice
-		textinput("testgrades","Test Grade $i");
+## Print all Sets
+#  Prints all set definitions
+#  Notes that the catNames are visual, and therefore are passed as legends, not names.
+sub printAllSets{
+	for(my $i = 0; $i<$catCount; $i++){
+		printSet("cat$i",$catLengths[$i],$catNames[$i]);
 	}
-
-	print<<ENDPRINT;
-	</fieldset>
-</div>
-ENDPRINT
 }
 
-##Generic text input tag creator
-# Takes (name, placeholder)
-sub textinput{
-	printf("<input type='text' name='%s' placeholder='%s' />\n", @_[0], @_[1]);
+#### OUTPUT RESULTS
+##
+
+
+
+#### PREPARATION
+##
+
+if($catCount==0){
+	newCat("Projects",5,60);
+	newCat("Quizzes",5,40);
 }
 
-
-##Main section
-# Print the page
-startfile();
-
-mainforms($quizinputs,$testinputs);
-auxforms();
-
-endfile();
+#### MAIN PROGRAM
+##
+startFile();
+makeSidebar();
+makeContent();
+endFile();
