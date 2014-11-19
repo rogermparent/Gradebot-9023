@@ -1,10 +1,22 @@
-#!C:/xampp/perl/bin/perl.exe -w
 #!/usr/bin/perl
+#!C:/xampp/perl/bin/perl.exe -w
 
 use CGI qw(:cgi-lib :standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 use warnings;
 use strict;
+
+####VARIABLES
+##  Defining variables
+
+##Form definitions: Four arrays of the same length containing the properties of the forms.
+# Names is strings, Lengths is integers, Weights is floats, and Data is arrays of integers
+# There's also a variable that is incremented every time the setter is called to keep track of the amount of definitions.
+my @catNames;
+my @catLengths;
+my @catWeights;
+my @catData;
+my $catCount = 0;
 
 ####PAGE CONSTRUCTION
 ##
@@ -70,6 +82,7 @@ ENDPRINT
 	printAllSets();
 	print<<ENDPRINT;
 			</div>
+			<input type=hidden name="amountOfCategories" value="$catCount" />
 			<input type=hidden name="gradesEntered" value="yes" />
 			<input type=submit value="Submit" />
 		</div>
@@ -82,19 +95,12 @@ ENDPRINT
 sub makeResults
 {
 	printData();
+	printFinalGrade();
 }
 
 ####DYNAMIC FORMS
 ##
 
-##Form definitions: Four arrays of the same length containing the properties of the forms.
-# Names is strings, Lengths is integers, Weights is floats, and Data is arrays of integers
-# There's also a variable that is incremented every time the setter is called to keep track of the amount of definitions.
-my @catNames;
-my @catLengths;
-my @catWeights;
-my @catData;
-my $catCount = 0;
 
 ##Variables to change the form definitions if needed.
 # 
@@ -133,11 +139,12 @@ print<<ENDPRINT;
 ENDPRINT
 
 	for(my $i = 0; $i < $_[1]; $i++)
-{
+	{
 		print("\t\t", textInput($_[0]));
 	}
 
 print<<ENDPRINT;
+		<input type=hidden name="nameOf$_[0]" value="$_[2]">
 	</fieldset>
 ENDPRINT
 }
@@ -148,8 +155,9 @@ ENDPRINT
 sub printAllSets
 {
 	for(my $i = 0; $i<$catCount; $i++)
-{
+	{
 		printSet("cat$i",$catLengths[$i],$catNames[$i]);
+		print("<input type=hidden name='inputWeights' value='$catWeights[$i]'>\n");
 	}
 }
 
@@ -193,17 +201,17 @@ ENDPRINT
 
 ##Normalize Weight
 # Attempts to make all weights relative to 1.
-# Takes all weights, adds them to $total, multiplies each entry by 100/total
+# Takes input array, adds them to $total, multiplies each entry by 100/total
 # Returns an array of the normalized weights
 sub normalizeWeights
 {
 	my $total = 0;
 	my @normWeights = [];
-	foreach(@catWeights)
+	foreach(@_)
 {
 		$total += $_;
 	}
-	foreach(@catWeights)
+	foreach(@_)
 {
 		(@normWeights, $_ * (1/$total));
 	}
@@ -215,21 +223,50 @@ sub normalizeWeights
 sub printData
 {
 	my @dataToPrint;
-	for(my $i = 0; $i < $catCount; $i++)
-{
+	my $sum;
+	my $name;
+	my $length;
+	my $average;
+	for(my $i = 0; $i < param("amountOfCategories"); $i++)
+	{
 		@dataToPrint = param("cat$i");
+		$sum = getSum(@dataToPrint);
+		$name = param("nameOfcat$i");
+		$length = @dataToPrint;
+		$average = $sum/$length;
 		print<<ENDPRINT;
 		<div class="catResult">
-			<h4>$catNames[$i]</h4>
+			<h4>$name</h4>
 ENDPRINT
 		foreach(@dataToPrint)
-{
-			printf("<p>$_</p>");
+		{
+			printf("\t\t\t<p class='gradeValue'>$_</p>\n");
 		}
 		print<<ENDPRINT;
+			<p class="equation">$sum / $length = $average</p>
 		</div>
 ENDPRINT
 	}
+}
+
+##Print Final Grade
+# prints a div containing the final grade data
+sub printFinalGrade
+{
+	my @singleCat;
+	my @catAverages;
+	my @weights = param("inputWeights");
+	@weights = normalizeWeights(@weights);
+	print<<ENDPRINT;
+	
+ENDPRINT
+	for(my $i = 0; $i < param("amountOfCategories"); $i++)
+	{
+		@singleCat = param("cat$i");
+		push(@catAverages, getSum(@singleCat)/@singleCat);
+		print($catAverages[$i], " ");
+	}
+	print('\n', $weights[0]);
 }
 
 ##Get Sum and Get Average
@@ -237,16 +274,13 @@ ENDPRINT
 sub getSum
 {
 	my $sum;
-	foreach($_)
+	foreach(@_)
 	{
 		$sum += $_;
 	}
 	return $sum;
 }
 
-sub getAverage
-{
-	
 
 ####PREPARATION
 ##

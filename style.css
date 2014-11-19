@@ -53,5 +53,15 @@ fieldset{
 
 /* Styles for the results */
 .catResult{
-	background-color:green;
+	background-color:cyan;
+	width:100px;
+	padding:5px;
+	margin:5px;
+	display:inline-block;
+	vertical-align:top;
+	outline: 2px solid black;
+}
+.catResult h4{
+	margin:0;
+	text-align:center;
 }

@@ -25,9 +25,10 @@ fieldset{
 	background-color:cyan;
 	padding:5px 0 5px 15px;:tabn
 	margin-right:10px;
+	width:800px;
 }
 #quizzesandtests{
-	white-space:nowrap;
+	width:100%;
 }
 
 #quizzes{
@@ -50,3 +51,17 @@ fieldset{
 	border-right:2px solid black;
 }
 
+/* Styles for the results */
+.catResult{
+	background-color:cyan;
+	width:100px;
+	padding:5px;
+	margin:5px;
+	display:inline-block;
+	vertical-align:top;
+	outline: 2px solid black;
+}
+.catResult h4{
+	margin:0;
+	text-align:center;
+}
