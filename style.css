@@ -25,6 +25,7 @@ fieldset{
 	background-color:cyan;
 	padding:5px 0 5px 15px;:tabn
 	margin-right:10px;
+	width:800px;
 }
 #quizzesandtests{
 	width:100%;
@@ -50,3 +51,7 @@ fieldset{
 	border-right:2px solid black;
 }
 
+/* Styles for the results */
+.catResult{
+	background-color:green;
+}
