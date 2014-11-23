@@ -1,5 +1,5 @@
-#!/usr/bin/perl
 #!C:/xampp/perl/bin/perl.exe -w
+#!/usr/bin/perl
 
 use CGI qw(:cgi-lib :standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
@@ -54,7 +54,7 @@ ENDPRINT
 sub makeSidebar
 {
 print<<ENDPRINT;
-	<div id="auxforms">
+	<div id="sidebarDiv">
 		<a href="index.pl">
 			<img src = "images/logo.png" />
 		</a>
@@ -64,6 +64,14 @@ print<<ENDPRINT;
 ENDPRINT
 	printAllManipulators();
 	print<<ENDPRINT;
+				</div>
+				<div id="instructions">
+					<p class="emphasis centered">Instructions</p>
+					<p>Configure your input form here, click "Update", then fill out the input form.</p>
+					<p>Updating the form will clear your input values, and vice versa.</p>
+					<p>Check "New Category" and click "Update" to add a new category.<p>
+					<p>Delete a category's name and click "Update" to remove it.<p>
+					<p>Bookmark a form configuration to reuse it later!</p>
 				</div>
 			</form>
 		</div>
@@ -76,11 +84,11 @@ sub makeInputForms
 {
 print<<ENDPRINT;
 	<form method=post action="index.pl">
-		<div class="mainforms">
+		<div class="inputForms">
 			<div class="container centered">
 				<label for="username">Username: </label><input type=text name="username" id="username"/>
 			</div>
-			<div class="container centered" id="quizzesandtests">
+			<div class="container centered" id="inputFieldsets">
 ENDPRINT
 	printAllSets();
 	print<<ENDPRINT;
@@ -143,7 +151,7 @@ sub textInput
 sub printSet
 {
 print<<ENDPRINT;
-	<fieldset class="category">
+	<fieldset class="inputCategory">
 		<legend>$_[2]</legend>
 ENDPRINT
 
@@ -199,7 +207,7 @@ sub printAllManipulators
 	}
 	print<<ENDPRINT;
 	<div>
-		<label for="newcatbox">New category?:</label>
+		<label for="newcatbox">New Category:</label>
 		<input type=checkbox name="newManipulator" id="newcatbox"/><input type=submit value="Update" />
 	</div>
 ENDPRINT

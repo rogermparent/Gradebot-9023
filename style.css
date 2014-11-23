@@ -15,12 +15,12 @@ fieldset{
 
 }
 
-/* Styles for the mainforms div */
-.mainforms fieldset{
+/* Styles for the inputForms div */
+.inputForms fieldset{
 	width:100px;
 	display:inline-block;
 }
-.mainforms, #results{
+.inputForms, #results{
 	margin-left:240px;
 	min-width:150px;
 	text-align:center;
@@ -31,7 +31,7 @@ fieldset{
 	padding:5px 0 5px 15px;
 	margin-right:10px;
 }
-#quizzesandtests{
+#inputFieldsets{
 	width:100%;
 }
 
@@ -43,8 +43,8 @@ fieldset{
 	width:100px;
 }
 
-/* Styles for the auxforms div */
-#auxforms{
+/* Styles for the sidebarDiv div */
+#sidebarDiv{
 	text-align:center;
 	position:absolute;
 	top:0;
@@ -92,4 +92,12 @@ fieldset{
 }
 p{
 	margin:3px 0 3px 0;
+}
+#instructions{
+	font-size:12px;
+	text-align:left;
+	margin:10px;
+	padding:0 5px 0 5px;
+	border:1px solid black;
+	background-color:#E9E0D6;
 }
