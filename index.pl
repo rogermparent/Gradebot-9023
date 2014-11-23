@@ -1,5 +1,5 @@
-#!C:/xampp/perl/bin/perl.exe -w
 #!/usr/bin/perl
+#!C:/xampp/perl/bin/perl.exe -w
 
 use CGI qw(:cgi-lib :standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
