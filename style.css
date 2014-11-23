@@ -2,6 +2,7 @@
 body{
 	font-family: 'Open Sans', sans-serif;
 	font-size:14px;
+	background-color:#5D719E;
 }
 
 .centered{
@@ -26,7 +27,7 @@ fieldset{
 	border:1px solid black;
 	border-left:none;
 	border-radius:0 10px 10px 0;
-	background-color:cyan;
+	background-color:#C5CDE0;
 	padding:5px 0 5px 15px;
 	margin-right:10px;
 }
@@ -50,14 +51,14 @@ fieldset{
 	left:0;
 	width:250px;
 	height:100%;
-	background-color:#CFCFBF;
+	background-color:#A1AECB;
 	border-right:2px solid black;
 }
 
 /* Styles for the results */
 .catResult, #finalGrade{
 	text-align:left;
-	background-color:cyan;
+	background-color:#E9E0D6;
 	width:100px;
 	padding:5px;
 	margin:5px;

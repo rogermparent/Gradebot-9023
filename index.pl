@@ -1,5 +1,5 @@
-#!C:/xampp/perl/bin/perl.exe -w
 #!/usr/bin/perl
+#!C:/xampp/perl/bin/perl.exe -w
 
 use CGI qw(:cgi-lib :standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
@@ -32,7 +32,7 @@ Content-type: text/html
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Graderbot 9023</title>
+	<title>Gradebot 9023</title>
 	<link href='http://fonts.googleapis.com/css?family=Raleway|Montserrat' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	
