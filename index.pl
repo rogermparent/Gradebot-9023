@@ -1,8 +1,9 @@
-#!/usr/bin/perl
 #!C:/xampp/perl/bin/perl.exe -w
+#!/usr/bin/perl
 
 use CGI qw(:cgi-lib :standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
+use Scalar::Util qw(looks_like_number);
 use warnings;
 use strict;
 
@@ -32,7 +33,9 @@ Content-type: text/html
 <head>
 	<meta charset="UTF-8" />
 	<title>Graderbot 9023</title>
+	<link href='http://fonts.googleapis.com/css?family=Raleway|Montserrat' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	
 </head>
 <body>
 ENDPRINT
@@ -94,8 +97,14 @@ ENDPRINT
 # Print out the results page
 sub makeResults
 {
+	print("<div id='results'>\n\t");
+	if(param("username") ne undef)
+	{
+		print("<div id='username' class='emphasis'>Username: ", param("username"),"</div>");
+	}
 	printData();
 	printFinalGrade();
+	print("</div>");
 }
 
 ####DYNAMIC FORMS
@@ -157,7 +166,7 @@ sub printAllSets
 	for(my $i = 0; $i<$catCount; $i++)
 	{
 		printSet("cat$i",$catLengths[$i],$catNames[$i]);
-		print("<input type=hidden name='inputWeights' value='$catWeights[$i]'>\n");
+		print("<input type=hidden name='inputWeights' value=$catWeights[$i]>\n");
 	}
 }
 
@@ -199,21 +208,22 @@ ENDPRINT
 ####OUTPUT RESULTS
 ##
 
-##Normalize Weight
+##Normalize Weights
 # Attempts to make all weights relative to 1.
 # Takes input array, adds them to $total, multiplies each entry by 100/total
 # Returns an array of the normalized weights
 sub normalizeWeights
 {
 	my $total = 0;
-	my @normWeights = [];
-	foreach(@_)
-{
+	my @inWeights = @_;
+	my @normWeights;
+	foreach(@inWeights)
+	{
 		$total += $_;
 	}
-	foreach(@_)
-{
-		(@normWeights, $_ * (1/$total));
+	foreach(@inWeights)
+	{
+		push(@normWeights, $_ * (1/$total));
 	}
 	return(@normWeights);
 }
@@ -229,10 +239,11 @@ sub printData
 	my $average;
 	for(my $i = 0; $i < param("amountOfCategories"); $i++)
 	{
-		@dataToPrint = param("cat$i");
+		@dataToPrint = validate(param("cat$i"));
 		$sum = getSum(@dataToPrint);
 		$name = param("nameOfcat$i");
 		$length = @dataToPrint;
+		if($length==0){$length=1};
 		$average = $sum/$length;
 		print<<ENDPRINT;
 		<div class="catResult">
@@ -242,10 +253,7 @@ ENDPRINT
 		{
 			printf("\t\t\t<p class='gradeValue'>$_</p>\n");
 		}
-		print<<ENDPRINT;
-			<p class="equation">$sum / $length = $average</p>
-		</div>
-ENDPRINT
+		printf("<p class='equation emphasis'>%d / %d = %.2f</p>\n</div>",$sum,$length,$average);
 	}
 }
 
@@ -255,22 +263,28 @@ sub printFinalGrade
 {
 	my @singleCat;
 	my @catAverages;
-	my @weights = param("inputWeights");
-	@weights = normalizeWeights(@weights);
+	my @weights = normalizeWeights(param("inputWeights"));
+	my $length;
 	print<<ENDPRINT;
-	
+	<div id="finalGrade">
 ENDPRINT
 	for(my $i = 0; $i < param("amountOfCategories"); $i++)
 	{
-		@singleCat = param("cat$i");
-		push(@catAverages, getSum(@singleCat)/@singleCat);
-		print($catAverages[$i], " ");
+		@singleCat = validate(param("cat$i"));
+		$length = @singleCat;
+		if($length == 0){
+			$length = 1;
+		}
+		push(@catAverages, $weights[$i]*(getSum(@singleCat)/$length));
+		printf("<div><div class='fgLabel'>%s:</div>%d</div>",param("nameOfcat$i"),$catAverages[$i]);
 	}
-	print('\n', $weights[0]);
+	my $finalGrade = int(getSum(@catAverages));
+	print("<b><div class='fgLabel'>Final Grade:</div>",$finalGrade,"<div class='gradeLetter'></b>",
+	getGrade($finalGrade),"</div>\n</div>");
 }
 
-##Get Sum and Get Average
-# Convenience functions using foreach to get the sum or average of an array.
+##Get Sum
+# Convenience function using foreach to get the sum of an array.
 sub getSum
 {
 	my $sum;
@@ -281,7 +295,49 @@ sub getSum
 	return $sum;
 }
 
+##Validate Grade
+# Error-traps a number array by forcing numbers greater than or less than a range
+# to be set to the bounds of that range instead. It's hard-coded with 0-100;
+# Also sets anything with letters to "pass"
+# Parameters: (@array), Returns the valid array
+sub validate{
+	my @validArray = @_;
+	for(my $i; $i<@validArray;$i++)
+	{
+		if(looks_like_number($validArray[$i]))
+		{
+			if($validArray[$i]<0)
+			{
+				$validArray[$i]=0;
+			}
+			elsif($validArray[$i]>100)
+			{
+				$validArray[$i]=100;
+			}
+		}
+		else{
+			$validArray[$i]=0;
+		}
+	}
+	return @validArray;
+}
 
+##Get Grade
+# Compares input to a grading scale, returns the letter
+sub getGrade{
+	my $grade=$_[0];
+	if($grade>=93){return "A";}
+	elsif($grade>=90){return "A-";}
+	elsif($grade>=87){return "B+";}
+	elsif($grade>=83){return "B";}
+	elsif($grade>=80){return "B-";}
+	elsif($grade>=77){return "C+";}
+	elsif($grade>=73){return "C";}
+	elsif($grade>=70){return "C-";}
+	elsif($grade>=67){return "D+";}
+	elsif($grade>=63){return "D";}
+	else{return "F";}
+}
 ####PREPARATION
 ##
 
@@ -304,9 +360,9 @@ else
 ####MAIN PROGRAM
 ##
 startFile();
+makeSidebar();
 if(param("gradesEntered") ne "yes")
 {
-	makeSidebar();
 	makeInputForms();
 }
 else

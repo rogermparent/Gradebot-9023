@@ -1,4 +1,9 @@
 /* Generic styles for the whole page */
+body{
+	font-family: 'Open Sans', sans-serif;
+	font-size:14px;
+}
+
 .centered{
 	text-align:center;
 }
@@ -14,18 +19,16 @@ fieldset{
 	width:100px;
 	display:inline-block;
 }
-.mainforms{
-	text-align:left;
-	position:absolute;
-	top:20px;
-	left:350px;
+.mainforms, #results{
+	margin-left:240px;
+	min-width:150px;
+	text-align:center;
 	border:1px solid black;
 	border-left:none;
 	border-radius:0 10px 10px 0;
 	background-color:cyan;
-	padding:5px 0 5px 15px;:tabn
+	padding:5px 0 5px 15px;
 	margin-right:10px;
-	width:800px;
 }
 #quizzesandtests{
 	width:100%;
@@ -45,14 +48,15 @@ fieldset{
 	position:absolute;
 	top:0;
 	left:0;
-	width:350px;
+	width:250px;
 	height:100%;
 	background-color:#CFCFBF;
 	border-right:2px solid black;
 }
 
 /* Styles for the results */
-.catResult{
+.catResult, #finalGrade{
+	text-align:left;
 	background-color:cyan;
 	width:100px;
 	padding:5px;
@@ -61,7 +65,30 @@ fieldset{
 	vertical-align:top;
 	outline: 2px solid black;
 }
+#finalGrade{
+	width:auto;
+}
+.fgLabel{
+	width:100px;
+	display:inline-block;
+}
 .catResult h4{
 	margin:0;
 	text-align:center;
+}
+.gradeLetter{
+	font-size:40px;
+	text-align:center;
+	font-weight:900;
+}
+.emphasis, b{
+	font-weight:700;
+	font-family:'Open Sans', sans-serif;
+}
+#username{
+	font-size:24px;
+	text-align:center;
+}
+p{
+	margin:3px 0 3px 0;
 }
